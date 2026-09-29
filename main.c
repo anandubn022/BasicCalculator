@@ -83,7 +83,7 @@ int precedenceOf(char x) {
 void toPostfix(char input[], char output[]) {
     char stack[20];
     int k=0, top = -1;
-    for (int i=0; i<=strlen(input); i++) {
+    for (int i=0; i<strlen(input); i++) {
         if (isdigit(input[i])) {
             output[k++] = input[i];
         }
@@ -104,17 +104,16 @@ void toPostfix(char input[], char output[]) {
             }
             stack[++top] = input[i];
         }
-
-        while (top != -1){
+    }
+    while (top != -1){
             output[k++] = stack[top];
             top--;
-        }
     }
     output[k] = '\0';
 }
 
 void  readExpression(char input[]) {
-    char exp[10];
+    char exp[30];
 
     printf("Enter the expression : ");
     fgets(exp, sizeof(exp), stdin);
