@@ -95,4 +95,10 @@ void main() {
     char outputString[20];
     calculateResult(outputString, operand1, operand2, operator);
     printf("Output : %s", outputString);
+
+    /*
+        to change
+        1. add postfix expression conversion
+        2. add postfix calculation
+    */
 }
