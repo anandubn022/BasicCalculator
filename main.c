@@ -65,6 +65,54 @@ void separateExpression(char input[], int *operand1, int *operand2, char *operat
     *operand2 = atoi(operand);
 }
 
+int precedenceOf(char x) {
+    if (x == '^') {
+        return 3;
+    }
+    else if (x == '*' || x == '/' || x == '%') {
+        return 2;
+    }
+    else if (x == '+' || x == '-') {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+void toPostfix(char input[], char output[]) {
+    char stack[20];
+    int k=0, top = -1;
+    for (int i=0; i<=strlen(input); i++) {
+        if (isdigit(input[i])) {
+            output[k++] = input[i];
+        }
+        else if (input[i] == '(') {
+            stack[++top] = input[i];
+        }
+        else if (input[i] == ')') {
+            while(stack[top] != '(') {
+                output[k++] = stack[top];
+                top--;
+            }
+            top--;
+        }
+        else {  //  operator
+            while (top != -1 && stack[top] != '(' && precedenceOf(stack[top]) >= precedenceOf(input[i])){
+                output[k++] = stack[top];
+                top--;
+            }
+            stack[++top] = input[i];
+        }
+
+        while (top != -1){
+            output[k++] = stack[top];
+            top--;
+        }
+    }
+    output[k] = '\0';
+}
+
 void  readExpression(char input[]) {
     char exp[10];
 
@@ -84,9 +132,10 @@ void  readExpression(char input[]) {
 }
 
 void main() {
-    char input[10];
+    char input[20], outputString[20];
     readExpression(input);
 
+    /*
     int operand1, operand2;
     char operator;
     separateExpression(input, &operand1, &operand2, &operator);
@@ -95,10 +144,14 @@ void main() {
     char outputString[20];
     calculateResult(outputString, operand1, operand2, operator);
     printf("Output : %s", outputString);
+    */
 
     /*
         to change
         1. add postfix expression conversion
         2. add postfix calculation
     */
+
+    toPostfix(input, outputString);
+    printf("Postfic Expression : %s\n", outputString);
 }
