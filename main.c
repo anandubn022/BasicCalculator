@@ -3,67 +3,66 @@
 #include <stdlib.h>
 #include <string.h>
 
-void calculateResult(char outputString[], int op1, int op2, char opr) {
-    int outputInt;
+int calculateResult(int op1, int op2, char opr) {
+    
     switch (opr)
     {
     case '+':
-        outputInt =  op1+op2;
-        sprintf(outputString, "%d", outputInt);
+        return op1+op2;
+        
         break;
     case '-':
-        outputInt =  op1-op2;
-        sprintf(outputString, "%d", outputInt);
+        return op1-op2;
+        
         break;
     case '*':
-        outputInt =  op1*op2;
-        sprintf(outputString, "%d", outputInt);
+        return op1*op2;
+        
         break;
     case '/':
-        outputInt =  op1/op2;
-        sprintf(outputString, "%d", outputInt);
+        return op1/op2;
+        
         break;
     case '%':
-        outputInt =  op1%op2;
-        sprintf(outputString, "%d", outputInt);
+        return op1%op2;
+        
         break;
     default:
-        strcpy(outputString, "Invalid Input");
         break;
     }
 
 }
 
-void separateExpression(char input[], int *operand1, int *operand2, char *operator) {
-    int k = 0;
-    char operand[10];
-    while(input[k] != '\0'){
+// void separateExpression(char input[], int *operand1, int *operand2, char *operator) {
+//     int k = 0;
+//     char operand[10];
+//     while(input[k] != '\0'){
         
-        if (isdigit(input[k])) {
-            operand[k] = input[k];
-            k++;
-            continue;
-        }
-        break;
-    }
-    operand[k] = '\0';
-    *operand1 = atoi(operand);
-    *operator = input[k];
-    k++;
-    strcpy(operand, "");
-    int i =0;
-    while(input[k] != '\0') {
-        if(isdigit(input[k])) {
-            operand[i] = input[k];
-            k++;
-            i++;
-            continue;
-        }
-        break;
-    }
-    operand[i] = '\0';
-    *operand2 = atoi(operand);
-}
+//         if (isdigit(input[k])) {
+//             operand[k] = input[k];
+//             k++;
+//             continue;
+//         }
+//         break;
+//     }
+//     operand[k] = '\0';
+//     *operand1 = atoi(operand);
+//     *operator = input[k];
+//     k++;
+//     strcpy(operand, "");
+//     int i =0;
+//     while(input[k] != '\0') {
+//         if(isdigit(input[k])) {
+//             operand[i] = input[k];
+//             k++;
+//             i++;
+//             continue;
+//         }
+//         break;
+//     }
+//     operand[i] = '\0';
+//     *operand2 = atoi(operand);
+// }
 
 int precedenceOf(char x) {
     if (x == '^') {
@@ -78,6 +77,28 @@ int precedenceOf(char x) {
     else {
         return 0;
     }
+}
+
+int evaluatePostfix(char input[]) {
+    int stack[20];
+    int top = -1;
+    for (int i = 0; i<strlen(input); i++) {
+        if (isdigit(input[i])) {
+            stack[++top] = input[i] - '0';
+        }
+        else {
+            int operand2 = stack[top--];
+            int operand1 = stack[top--];
+            int result = calculateResult(operand1, operand2, input[i]);
+            stack[++top] = result;
+            printf("%d %c %d = %d\n",
+                   operand1,
+                   input[i],
+                   operand2,
+                   result);
+        }
+    }
+    return stack[top];
 }
 
 void toPostfix(char input[], char output[]) {
@@ -113,7 +134,7 @@ void toPostfix(char input[], char output[]) {
 }
 
 void  readExpression(char input[]) {
-    char exp[30];
+    char exp[30];   //  larger expressions require large arrays
 
     printf("Enter the expression : ");
     fgets(exp, sizeof(exp), stdin);
@@ -153,4 +174,7 @@ void main() {
 
     toPostfix(input, outputString);
     printf("Postfic Expression : %s\n", outputString);
+
+    int evaluationResult = evaluatePostfix(outputString);
+    printf("Result : %d\n", evaluationResult);
 }
